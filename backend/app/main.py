@@ -2,14 +2,17 @@ from fastapi import FastAPI
 from sqlalchemy import text
 
 from app.database.session import SessionLocal
+
 from app.routers import auth
 from app.routers import games
+from app.routers import scores
 
 app = FastAPI(
     title="ArcadeHub API"
 )
 app.include_router(auth.router)
 app.include_router(games.router)
+app.include_router(scores.router)
 @app.get("/")
 def root():
     return {"message": "ArcadeHub API Running"}

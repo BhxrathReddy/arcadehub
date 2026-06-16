@@ -1,3 +1,3 @@
-from app.models.user import User
-from app.models.game import Game
-from app.models.score import Score
+from app.routers import auth
+from app.routers import games
+from app.routers import scores
