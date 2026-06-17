@@ -2,16 +2,29 @@ import { Link } from "react-router-dom";
 
 export default function GamesPage() {
   return (
-    <div className="p-8">
+    <div
+  className="
+    bg-gray-800
+    rounded
+    p-6
+    shadow
+  "
+>
 
-      <h1 className="text-3xl font-bold">
-        Games
-      </h1>
+  <h2>
+    Snake
+  </h2>
 
-      <Link to="/games/snake">
-        Play Snake
-      </Link>
+  <p>
+    Eat food and survive.
+  </p>
 
-    </div>
+  <Link
+    to="/games/snake"
+  >
+    Play
+  </Link>
+
+</div>
   );
 }
