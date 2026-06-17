@@ -1,3 +1,5 @@
+// src/routes/AppRouter.jsx
+
 import {
   BrowserRouter,
   Routes,
@@ -7,6 +9,8 @@ import {
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import Dashboard from "../pages/Dashboard";
+import LeaderboardPage from "../pages/LeaderboardPage";
+import GamesPage from "../pages/GamesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRouter() {
@@ -29,6 +33,23 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/leaderboard"
+          element={
+            <ProtectedRoute>
+              <LeaderboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/games"
+          element={
+            <ProtectedRoute>
+              <GamesPage />
             </ProtectedRoute>
           }
         />
