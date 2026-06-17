@@ -12,6 +12,7 @@ import Dashboard from "../pages/Dashboard";
 import LeaderboardPage from "../pages/LeaderboardPage";
 import GamesPage from "../pages/GamesPage";
 import ProtectedRoute from "./ProtectedRoute";
+import SnakePage from "../pages/SnakePage";
 
 export default function AppRouter() {
   return (
@@ -50,6 +51,14 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <GamesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/games/snake"
+          element={
+            <ProtectedRoute>
+              <SnakePage />
             </ProtectedRoute>
           }
         />
