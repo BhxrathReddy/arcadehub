@@ -11,7 +11,7 @@ from app.auth.dependencies import get_current_user
 from app.models.user_achievement import (
     UserAchievement
 )
-
+from app.schemas.achievement import AchievementResponse
 from app.models.score import Score
 
 router = APIRouter(
