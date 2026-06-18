@@ -24,7 +24,20 @@ export default function GamesPage() {
   >
     Play
   </Link>
+  <Link
+    to="/games/memory-match"
+    className="block"
+  >
+    Play Memory Match
+  </Link>
+  <Link
+    to="/games/typing-test"
+    className="block"
+  >
+    Play Typing Test
+  </Link>
 
 </div>
+
   );
 }

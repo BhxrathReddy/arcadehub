@@ -12,8 +12,9 @@ import Dashboard from "../pages/Dashboard";
 import LeaderboardPage from "../pages/LeaderboardPage";
 import GamesPage from "../pages/GamesPage";
 import ProtectedRoute from "./ProtectedRoute";
-import SnakePage from "../pages/SnakePage";
-
+import SnakePage from "../games/snake/SnakePage";
+import MemoryMatchPage from "../games/memory-match/MemoryMatchPage";
+import TypingTestPage from "../games/typing-test/TypingTestPage";
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -46,6 +47,7 @@ export default function AppRouter() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/games"
           element={
@@ -54,6 +56,7 @@ export default function AppRouter() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/games/snake"
           element={
@@ -62,6 +65,25 @@ export default function AppRouter() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/games/memory-match"
+          element={
+            <ProtectedRoute>
+              <MemoryMatchPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/games/typing-test"
+          element={
+            <ProtectedRoute>
+              <TypingTestPage />
+            </ProtectedRoute>
+          }
+        />
+
 
       </Routes>
     </BrowserRouter>
