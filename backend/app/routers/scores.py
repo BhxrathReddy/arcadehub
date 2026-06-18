@@ -17,7 +17,9 @@ from app.schemas.score import (
     ScoreCreate,
     ScoreResponse
 )
-
+from app.services.achievement_service import (
+    check_achievements
+)
 from app.auth.dependencies import (
     get_current_user
 )
@@ -58,7 +60,12 @@ def submit_score(
 
     current_user.level = (
     current_user.xp // 100) + 1
-
+    check_achievements(
+    current_user,
+    data.score,
+    data.game_id,
+    db
+)
     db.commit()
     db.refresh(score)
 
