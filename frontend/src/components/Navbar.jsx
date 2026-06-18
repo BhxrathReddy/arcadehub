@@ -21,6 +21,9 @@ export default function Navbar() {
         <Link to="/games">
             Games
         </Link>
+        <Link to="/profile">
+          Profile
+        </Link>
       </div>
 
       <button onClick={logout}>

@@ -15,6 +15,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import SnakePage from "../games/snake/SnakePage";
 import MemoryMatchPage from "../games/memory-match/MemoryMatchPage";
 import TypingTestPage from "../games/typing-test/TypingTestPage";
+import ProfilePage from "../pages/ProfilePage";
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -25,9 +26,19 @@ export default function AppRouter() {
           element={<LoginPage />}
         />
 
+        
         <Route
           path="/register"
           element={<RegisterPage />}
+        />
+
+        <Route
+          path="/Dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
         />
 
         <Route
@@ -84,6 +95,14 @@ export default function AppRouter() {
           }
         />
 
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
 
       </Routes>
     </BrowserRouter>
