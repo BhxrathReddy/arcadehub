@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from sqlalchemy import (
     String,
     Integer,
@@ -64,5 +63,9 @@ class User(Base):
 
     scores = relationship(
         "Score",
+        back_populates="user"
+    )
+    achievements = relationship(
+        "UserAchievement",
         back_populates="user"
     )
