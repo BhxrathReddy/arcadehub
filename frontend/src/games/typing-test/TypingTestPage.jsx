@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../api/api";
 
 const paragraphs = [
@@ -9,70 +9,114 @@ const paragraphs = [
   "Consistency and deliberate practice are the keys to becoming a great software engineer."
 ];
 
+function getRandomParagraph() {
+  return paragraphs[
+    Math.floor(
+      Math.random() *
+      paragraphs.length
+    )
+  ];
+}
+
 export default function TypingTestPage() {
 
-  const [text, setText] = useState("");
-  const [input, setInput] = useState("");
+  const [text, setText] =
+    useState(getRandomParagraph);
 
-  const [started, setStarted] = useState(false);
-  const [finished, setFinished] = useState(false);
+  const [input, setInput] =
+    useState("");
 
-  const [startTime, setStartTime] = useState(null);
+  const [started, setStarted] =
+    useState(false);
 
-  const [wpm, setWpm] = useState(0);
-  const [accuracy, setAccuracy] = useState(0);
-  const [score, setScore] = useState(0);
+  const [finished, setFinished] =
+    useState(false);
+
+  const [startTime, setStartTime] =
+    useState(null);
+
+  const [wpm, setWpm] =
+    useState(0);
+
+  const [accuracy, setAccuracy] =
+    useState(0);
+
+  const [score, setScore] =
+    useState(0);
 
   const [leaderboard, setLeaderboard] =
     useState([]);
 
-  useEffect(() => {
-    loadNewParagraph();
-    fetchLeaderboard();
-  }, []);
+  const fetchLeaderboard =
+    useCallback(async () => {
 
-  function loadNewParagraph() {
+      try {
 
-    const randomText =
-      paragraphs[
-        Math.floor(
-          Math.random() *
-          paragraphs.length
-        )
-      ];
+        const response =
+          await api.get(
+            "/scores/leaderboard/3"
+          );
 
-    setText(randomText);
-    setInput("");
-
-    setStarted(false);
-    setFinished(false);
-
-    setStartTime(null);
-
-    setWpm(0);
-    setAccuracy(0);
-    setScore(0);
-  }
-
-  async function fetchLeaderboard() {
-
-    try {
-
-      const response =
-        await api.get(
-          "/scores/leaderboard/3"
+        setLeaderboard(
+          response.data
         );
 
-      setLeaderboard(
-        response.data
+      } catch (error) {
+
+        console.error(error);
+
+      }
+    }, []);
+
+  useEffect(() => {
+
+    let isMounted = true;
+
+    async function loadLeaderboard() {
+
+      try {
+
+        const response =
+          await api.get(
+            "/scores/leaderboard/3"
+          );
+
+        if (isMounted) {
+          setLeaderboard(
+            response.data
+          );
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+    }
+
+    loadLeaderboard();
+
+    return () => {
+      isMounted = false;
+    };
+
+  }, []);
+
+  const loadNewParagraph =
+    useCallback(() => {
+
+      setText(
+        getRandomParagraph()
       );
 
-    } catch (error) {
-
-      console.error(error);
-
-    }
-  }
+      setInput("");
+      setStarted(false);
+      setFinished(false);
+      setStartTime(null);
+      setWpm(0);
+      setAccuracy(0);
+      setScore(0);
+    }, []);
 
   function handleChange(e) {
 
@@ -92,6 +136,111 @@ export default function TypingTestPage() {
     setInput(value);
   }
 
+  const calculateAccuracy =
+    useCallback((typedText) => {
+
+      let correct = 0;
+
+      for (
+        let i = 0;
+        i < typedText.length;
+        i++
+      ) {
+
+        if (
+          typedText[i] ===
+          text[i]
+        ) {
+
+          correct++;
+
+        }
+
+      }
+
+      return Math.round(
+        (
+          correct /
+          text.length
+        ) * 100
+      );
+    }, [text]);
+
+  const calculateWPM =
+    useCallback(() => {
+
+      const minutes =
+        (
+          Date.now() -
+          startTime
+        ) / 60000;
+
+      const words =
+        text
+          .trim()
+          .split(" ")
+          .length;
+
+      return Math.max(
+        Math.round(
+          words / minutes
+        ),
+        0
+      );
+    }, [startTime, text]);
+
+  const finishTest =
+    useCallback(async () => {
+
+      const finalWPM =
+        calculateWPM();
+
+      const finalAccuracy =
+        calculateAccuracy(
+          input
+        );
+
+      const finalScore =
+        finalWPM *
+        finalAccuracy;
+
+      setWpm(finalWPM);
+
+      setAccuracy(
+        finalAccuracy
+      );
+
+      setScore(
+        finalScore
+      );
+
+      setFinished(true);
+
+      try {
+
+        await api.post(
+          "/scores",
+          {
+            game_id: 3,
+            score:
+              finalScore
+          }
+        );
+
+        await fetchLeaderboard();
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+    }, [
+      calculateAccuracy,
+      calculateWPM,
+      fetchLeaderboard,
+      input
+    ]);
+
   useEffect(() => {
 
     if (
@@ -100,7 +249,14 @@ export default function TypingTestPage() {
       input === text
     ) {
 
-      finishTest();
+      const timer =
+        setTimeout(
+          finishTest,
+          0
+        );
+
+      return () =>
+        clearTimeout(timer);
 
     }
 
@@ -108,108 +264,9 @@ export default function TypingTestPage() {
     input,
     text,
     started,
-    finished
+    finished,
+    finishTest
   ]);
-
-  function calculateAccuracy(
-    typedText
-  ) {
-
-    let correct = 0;
-
-    for (
-      let i = 0;
-      i < typedText.length;
-      i++
-    ) {
-
-      if (
-        typedText[i] ===
-        text[i]
-      ) {
-
-        correct++;
-
-      }
-
-    }
-
-    return Math.round(
-      (
-        correct /
-        text.length
-      ) * 100
-    );
-  }
-
-  function calculateWPM() {
-
-    const minutes =
-      (
-        Date.now() -
-        startTime
-      ) / 60000;
-
-    const words =
-      text
-        .trim()
-        .split(" ")
-        .length;
-
-    return Math.max(
-      Math.round(
-        words / minutes
-      ),
-      0
-    );
-  }
-
-  async function finishTest() {
-
-    const finalWPM =
-      calculateWPM();
-
-    const finalAccuracy =
-      calculateAccuracy(
-        input
-      );
-
-    const finalScore =
-      finalWPM *
-      finalAccuracy;
-
-    setWpm(finalWPM);
-
-    setAccuracy(
-      finalAccuracy
-    );
-
-    setScore(
-      finalScore
-    );
-
-    setFinished(true);
-
-    try {
-
-      await api.post(
-        "/scores",
-        {
-          game_id: 3,
-          score:
-            finalScore
-        }
-      );
-
-      await fetchLeaderboard();
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-
-  }
 
   return (
     <div

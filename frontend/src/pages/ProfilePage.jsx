@@ -12,39 +12,44 @@ export default function ProfilePage() {
 
   useEffect(() => {
 
-    fetchProfile();
+    let isMounted = true;
 
-  }, []);
+    async function loadProfile() {
 
-  async function fetchProfile() {
+      try {
 
-    try {
+        const [
+          profileResponse,
+          achievementResponse
+        ] = await Promise.all([
+          api.get("/users/profile"),
+          api.get("/users/achievements")
+        ]);
 
-      const profileResponse =
-        await api.get(
-          "/users/profile"
-        );
+        if (isMounted) {
+          setProfile(
+            profileResponse.data
+          );
 
-      const achievementResponse =
-        await api.get(
-          "/users/achievements"
-        );
+          setAchievements(
+            achievementResponse.data
+          );
+        }
 
-      setProfile(
-        profileResponse.data
-      );
+      } catch(error) {
 
-      setAchievements(
-        achievementResponse.data
-      );
+        console.error(error);
 
-    } catch(error) {
-
-      console.error(error);
-
+      }
     }
 
-  }
+    loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+
+  }, []);
 
   if (!profile)
     return (
@@ -85,9 +90,10 @@ export default function ProfilePage() {
             items-center
             justify-center
             text-3xl
+            font-bold
+            text-black
             "
           >
-            👤
           </div>
 
           <div>
@@ -142,13 +148,13 @@ export default function ProfilePage() {
         <div className="grid grid-cols-2 gap-4">
 
           <div>
-            🎮 Games Played:
+            Games Played:
             {" "}
             {profile.games_played}
           </div>
 
           <div>
-            🏆 Highest Score:
+            Highest Score:
             {" "}
             {profile.highest_score}
           </div>
@@ -177,8 +183,8 @@ export default function ProfilePage() {
               "
             >
 
-              <div className="text-3xl mb-2">
-                🏆
+              <div className="text-sm uppercase tracking-wide text-green-300 mb-2">
+                Award
               </div>
 
               <h3 className="font-bold">

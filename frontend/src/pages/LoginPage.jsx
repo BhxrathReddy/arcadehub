@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 
 import { useAuth }
-from "../context/AuthContext";
+from "../context/useAuth";
 
 export default function LoginPage() {
 
   const { login } =
     useAuth();
+
+  const navigate =
+    useNavigate();
 
   const [email, setEmail] =
     useState("");
@@ -35,6 +39,8 @@ export default function LoginPage() {
         login(
           response.data.access_token
         );
+
+        navigate("/");
 
       } catch {
 

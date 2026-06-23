@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import api from "../api/api";
 import Navbar from "../components/Navbar";
+
+const gameRoutes = {
+  Snake: "/games/snake",
+  "Memory Match": "/games/memory-match",
+  "Typing Test": "/games/typing-test",
+};
+
 export default function Dashboard() {
 
   const [user, setUser] =
@@ -12,38 +20,44 @@ export default function Dashboard() {
 
   useEffect(() => {
 
-    fetchData();
+    let isMounted = true;
+
+    async function loadData() {
+
+      try {
+
+        const [
+          userResponse,
+          gamesResponse
+        ] = await Promise.all([
+          api.get("/users/me"),
+          api.get("/games")
+        ]);
+
+        if (isMounted) {
+          setUser(
+            userResponse.data
+          );
+
+          setGames(
+            gamesResponse.data
+          );
+        }
+
+      } catch(error) {
+
+        console.error(error);
+
+      }
+    }
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
 
   }, []);
-
-  async function fetchData() {
-
-    try {
-
-      const userResponse =
-        await api.get(
-          "/users/me"
-        );
-
-      const gamesResponse =
-        await api.get(
-          "/games"
-        );
-
-      setUser(
-        userResponse.data
-      );
-
-      setGames(
-        gamesResponse.data
-      );
-
-    } catch(error) {
-
-      console.error(error);
-
-    }
-  }
 
   if (!user)
     return <h2>Loading...</h2>;
@@ -97,16 +111,20 @@ export default function Dashboard() {
       {game.name}
     </h3>
 
-    <button
-      className="
-      mt-3
-      border
-      px-3
-      py-1
-      "
-    >
-      Play
-    </button>
+    {gameRoutes[game.name] && (
+      <Link
+        to={gameRoutes[game.name]}
+        className="
+        inline-block
+        mt-3
+        border
+        px-3
+        py-1
+        "
+      >
+        Play
+      </Link>
+    )}
 
   </div>
 

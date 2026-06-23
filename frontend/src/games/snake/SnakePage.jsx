@@ -47,7 +47,8 @@ export default function SnakePage() {
     gameOverRef.current = gameOver;
   }, [gameOver]);
 
-  async function fetchLeaderboard() {
+  const fetchLeaderboard =
+    useCallback(async () => {
     try {
       const response = await api.get(
         "/scores/leaderboard/1"
@@ -57,13 +58,34 @@ export default function SnakePage() {
     } catch (error) {
       console.error(error);
     }
-  }
-
-  useEffect(() => {
-    fetchLeaderboard();
   }, []);
 
-  async function submitScore(finalScore) {
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadLeaderboard() {
+      try {
+        const response = await api.get(
+          "/scores/leaderboard/1"
+        );
+
+        if (isMounted) {
+          setLeaderboard(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    loadLeaderboard();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const submitScore =
+    useCallback(async (finalScore) => {
     try {
       await api.post("/scores", {
         game_id: 1,
@@ -77,7 +99,7 @@ export default function SnakePage() {
         error
       );
     }
-  }
+  }, [fetchLeaderboard]);
 
   function randomFood(currentSnake) {
     let pos;
@@ -210,7 +232,7 @@ export default function SnakePage() {
     }
 
     setSnake(newSnake);
-  }, [highScore]);
+  }, [highScore, submitScore]);
 
   useEffect(() => {
     if (!started || gameOver)
@@ -379,31 +401,6 @@ export default function SnakePage() {
 
     touchStartRef.current =
       null;
-  }
-
-  function handleDpad(
-    newDirection
-  ) {
-    if (
-      !started &&
-      !gameOver
-    ) {
-      setStarted(true);
-    }
-
-    const opposites = {
-      UP: "DOWN",
-      DOWN: "UP",
-      LEFT: "RIGHT",
-      RIGHT: "LEFT",
-    };
-
-    setDirection((prev) =>
-      prev !==
-      opposites[newDirection]
-        ? newDirection
-        : prev
-    );
   }
 
   return (

@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import api from "../../api/api";
 
 const symbols = [
-  "🍎",
-  "🚀",
-  "🎮",
-  "🐍",
-  "⚡",
-  "🔥"
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F"
 ];
 
 export default function MemoryMatchPage() {
@@ -74,60 +74,59 @@ export default function MemoryMatchPage() {
       return;
     }
 
-    setFlipped((prev) => [
-      ...prev,
-      index,
-    ]);
-  }
-
-  useEffect(() => {
-
-    if (flipped.length !== 2) {
+    if (flipped.length === 0) {
+      setFlipped([index]);
       return;
     }
 
-    const [first, second] =
-      flipped;
+    const first =
+      flipped[0];
+
+    const nextMoves =
+      moves + 1;
 
     setMoves(
-      (prev) => prev + 1
+      nextMoves
     );
 
     if (
       cards[first]?.symbol ===
-      cards[second]?.symbol
+      cards[index]?.symbol
     ) {
+
+      const nextMatched = [
+        ...matched,
+        first,
+        index,
+      ];
 
       setMatched((prev) => [
         ...prev,
         first,
-        second,
+        index,
       ]);
 
       setFlipped([]);
 
+      if (nextMatched.length === cards.length) {
+        finishGame(
+          calculateScore(nextMoves)
+        );
+      }
+
     } else {
+
+      setFlipped([
+        first,
+        index,
+      ]);
 
       setTimeout(() => {
         setFlipped([]);
       }, 800);
 
     }
-
-  }, [flipped, cards]);
-
-  useEffect(() => {
-
-    if (
-      cards.length > 0 &&
-      matched.length === cards.length
-    ) {
-
-      finishGame();
-
-    }
-
-  }, [matched, cards]);
+  }
 
   useEffect(() => {
 
@@ -150,21 +149,22 @@ export default function MemoryMatchPage() {
 
   }, [startTime, gameOver]);
 
-  function calculateScore() {
+  function calculateScore(
+    moveCount = moves
+  ) {
 
     return Math.max(
       1000 -
       elapsedTime * 2 -
-      moves * 5,
+      moveCount * 5,
       0
     );
 
   }
 
-  async function finishGame() {
-
-    const finalScore =
-      calculateScore();
+  async function finishGame(
+    finalScore
+  ) {
 
     setGameOver(true);
 
@@ -196,19 +196,19 @@ export default function MemoryMatchPage() {
       <div className="flex gap-8 mb-6 text-lg">
 
         <div>
-          ⏱ Time:
+          Time:
           {" "}
           {elapsedTime}s
         </div>
 
         <div>
-          🎯 Moves:
+          Moves:
           {" "}
           {moves}
         </div>
 
         <div>
-          ⭐ Score:
+          Score:
           {" "}
           {calculateScore()}
         </div>
@@ -246,7 +246,7 @@ export default function MemoryMatchPage() {
               flipped.includes(index) ||
               matched.includes(index)
                 ? card.symbol
-                : "❓"
+                : "?"
             }
 
           </button>
