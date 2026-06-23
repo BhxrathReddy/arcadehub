@@ -1,32 +1,17 @@
+from app.database.seed import seed_games
 from app.database.session import SessionLocal
-
-from app.models.game import Game
-
-
-games = [
-    "Snake",
-    "Memory Match",
-    "Typing Test",
-    "Tic Tac Toe",
-    "Whack A Mole"
-]
 
 
 db = SessionLocal()
 
-for name in games:
+try:
+    created = seed_games(db)
+    db.commit()
+    print(f"Games seeded: {created} created")
 
-    existing = (
-        db.query(Game)
-        .filter(Game.name == name)
-        .first()
-    )
+except Exception:
+    db.rollback()
+    raise
 
-    if not existing:
-        db.add(
-            Game(name=name)
-        )
-
-db.commit()
-
-print("Games seeded")
+finally:
+    db.close()
