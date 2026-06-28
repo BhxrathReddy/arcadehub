@@ -67,6 +67,30 @@ def check_achievements(
             db
         )
 
+    # Typing Pro
+    if game_id == 3 and score >= 6000:
+        unlock_achievement(
+            user.id,
+            "Typing Pro",
+            db
+        )
+
+    # Tic Tac Toe Champ
+    if game_id == 4 and score >= 100:
+        unlock_achievement(
+            user.id,
+            "Tic Tac Toe Champ",
+            db
+        )
+
+    # Mole Hunter
+    if game_id == 5 and score >= 100:
+        unlock_achievement(
+            user.id,
+            "Mole Hunter",
+            db
+        )
+
     # Level 5
     if user.level >= 5:
         unlock_achievement(

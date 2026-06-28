@@ -44,6 +44,14 @@ ACHIEVEMENTS = [
         "description": "Reach 60 WPM"
     },
     {
+        "name": "Tic Tac Toe Champ",
+        "description": "Win a game of Tic Tac Toe"
+    },
+    {
+        "name": "Mole Hunter",
+        "description": "Score 100 in Whack A Mole"
+    },
+    {
         "name": "Level 5",
         "description": "Reach level 5"
     }
