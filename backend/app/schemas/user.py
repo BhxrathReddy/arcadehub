@@ -20,3 +20,17 @@ class UserResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class UserMeResponse(UserResponse):
+    xp: int
+    level: int
+
+
+class ProfileResponse(BaseModel):
+    username: str
+    email: str
+    xp: int
+    level: int
+    games_played: int
+    highest_score: int

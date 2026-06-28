@@ -8,6 +8,7 @@ const gameRoutes = {
   Snake: "/games/snake",
   "Memory Match": "/games/memory-match",
   "Typing Test": "/games/typing-test",
+  "Tic Tac Toe": "/games/tic-tac-toe",
 };
 
 export default function Dashboard() {
@@ -60,79 +61,100 @@ export default function Dashboard() {
   }, []);
 
   if (!user)
-    return <h2>Loading...</h2>;
+    return (
+      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+        Loading dashboard...
+      </div>
+    );
 
   return (
-    <>
-    <Navbar />
-    
-      <div className="p-8">
+    <div className="min-h-screen bg-gray-950 text-white">
+      <Navbar />
 
-        <h1 className="text-3xl font-bold">
-          Welcome {user.username}
-        </h1>
+      <main className="mx-auto max-w-6xl p-6">
+        <section className="mb-8">
+          <p className="text-sm uppercase tracking-wide text-green-300">
+            ArcadeHub
+          </p>
 
-        <p>
-          XP: {user.xp}
-        </p>
+          <h1 className="text-4xl font-bold mt-2">
+            Welcome, {user.username}
+          </h1>
 
-        <p>
-          Level: {user.level}
-        </p>
+          <div className="grid gap-4 sm:grid-cols-2 mt-6">
+            <div className="rounded-lg border border-gray-800 bg-gray-900 p-5">
+              <p className="text-gray-400">
+                XP
+              </p>
 
-        <h2 className="mt-8 text-2xl">
-          Games
-        </h2>
+              <p className="text-3xl font-bold">
+                {user.xp}
+              </p>
+            </div>
 
-        <div
-  className="
-  grid
-  grid-cols-3
-  gap-4
-  mt-4
-  "
->
+            <div className="rounded-lg border border-gray-800 bg-gray-900 p-5">
+              <p className="text-gray-400">
+                Level
+              </p>
 
-{games.map(game => (
+              <p className="text-3xl font-bold">
+                {user.level}
+              </p>
+            </div>
+          </div>
+        </section>
 
-  <div
-    key={game.id}
-    className="
-    border
-    rounded
-    p-4
-    shadow
-    "
-  >
+        <section>
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <h2 className="text-2xl font-bold">
+              Games
+            </h2>
 
-    <h3
-      className="font-bold"
-    >
-      {game.name}
-    </h3>
+            <Link
+              to="/games"
+              className="text-green-300 hover:text-green-200"
+            >
+              View all
+            </Link>
+          </div>
 
-    {gameRoutes[game.name] && (
-      <Link
-        to={gameRoutes[game.name]}
-        className="
-        inline-block
-        mt-3
-        border
-        px-3
-        py-1
-        "
-      >
-        Play
-      </Link>
-    )}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {games.map(game => {
+              const route =
+                gameRoutes[game.name];
 
-  </div>
+              return (
+                <div
+                  key={game.id}
+                  className="rounded-lg border border-gray-800 bg-gray-900 p-5"
+                >
+                  <h3 className="text-xl font-bold">
+                    {game.name}
+                  </h3>
 
-))}
+                  <p className="mt-2 text-sm text-gray-400 min-h-10">
+                    {game.description ||
+                      "Play a round and submit your score."}
+                  </p>
 
-</div>
-
-      </div>
-    </>
+                  {route ? (
+                    <Link
+                      to={route}
+                      className="mt-5 inline-block rounded bg-green-500 px-4 py-2 font-bold text-black hover:bg-green-400"
+                    >
+                      Play
+                    </Link>
+                  ) : (
+                    <span className="mt-5 inline-block rounded border border-gray-700 px-4 py-2 text-gray-500">
+                      Coming Soon
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }

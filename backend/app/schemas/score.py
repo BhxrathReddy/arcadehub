@@ -18,3 +18,15 @@ class ScoreResponse(BaseModel):
         "from_attributes": True
     }
 
+
+class LeaderboardEntry(BaseModel):
+    rank: int
+    username: str
+    score: int
+
+
+class GlobalLeaderboardEntry(BaseModel):
+    rank: int
+    username: str
+    xp: int
+    level: int

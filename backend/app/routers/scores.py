@@ -1,19 +1,14 @@
-from fastapi import APIRouter
-
-router = APIRouter(
-    prefix="/scores",
-    tags=["Scores"]
-)
-from fastapi import Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
 from app.database.dependencies import get_db
-
 from app.models.score import Score
 from app.models.game import Game
 from app.models.user import User
-
 from app.schemas.score import (
+    GlobalLeaderboardEntry,
+    LeaderboardEntry,
     ScoreCreate,
     ScoreResponse
 )
@@ -23,7 +18,11 @@ from app.services.achievement_service import (
 from app.auth.dependencies import (
     get_current_user
 )
-from sqlalchemy import desc
+
+router = APIRouter(
+    prefix="/scores",
+    tags=["Scores"]
+)
 
 @router.post(
     "/",
@@ -72,20 +71,29 @@ def submit_score(
     return score
 
 @router.get(
-    "/leaderboard/{game_id}"
+    "/leaderboard/{game_id}",
+    response_model=list[LeaderboardEntry]
 )
 def leaderboard(
     game_id: int,
     db: Session = Depends(get_db)
 ):
+    best_score = func.max(
+        Score.score
+    ).label("best_score")
 
-    scores = (
-        db.query(Score)
+    rows = (
+        db.query(
+            User.username,
+            best_score
+        )
+        .join(Score, Score.user_id == User.id)
         .filter(
             Score.game_id == game_id
         )
+        .group_by(User.id, User.username)
         .order_by(
-            desc(Score.score)
+            desc(best_score)
         )
         .limit(20)
         .all()
@@ -94,10 +102,10 @@ def leaderboard(
     return [
         {
             "rank": index + 1,
-            "username": score.user.username,
-            "score": score.score
+            "username": row.username,
+            "score": row.best_score
         }
-        for index, score in enumerate(scores)
+        for index, row in enumerate(rows)
     ]
 
 @router.get("/my-scores")
@@ -122,7 +130,10 @@ def my_scores(
 
     return scores
 
-@router.get("/global")
+@router.get(
+    "/global",
+    response_model=list[GlobalLeaderboardEntry]
+)
 def global_leaderboard(
     db: Session = Depends(get_db)
 ):

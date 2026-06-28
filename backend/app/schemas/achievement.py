@@ -12,3 +12,10 @@ class AchievementResponse(
     model_config = {
         "from_attributes": True
     }
+
+
+class AchievementStatusResponse(
+    AchievementResponse
+):
+
+    unlocked: bool

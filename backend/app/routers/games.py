@@ -1,9 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from fastapi import Depends
 
 from app.database.dependencies import get_db
 from app.models.game import Game
+from app.schemas.game import GameResponse
 
 router = APIRouter(
     prefix="/games",
@@ -11,7 +11,10 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get(
+    "/",
+    response_model=list[GameResponse]
+)
 def get_games(
     db: Session = Depends(get_db)
 ):

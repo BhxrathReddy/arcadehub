@@ -11,14 +11,25 @@ from app.auth.dependencies import get_current_user
 from app.models.user_achievement import (
     UserAchievement
 )
-from app.schemas.achievement import AchievementResponse
+from app.models.achievement import Achievement
+from app.schemas.achievement import (
+    AchievementResponse,
+    AchievementStatusResponse
+)
 from app.models.score import Score
+from app.schemas.user import (
+    ProfileResponse,
+    UserMeResponse
+)
 
 router = APIRouter(
     prefix="/users",
     tags=["Users"]
 )
-@router.get("/me")
+@router.get(
+    "/me",
+    response_model=UserMeResponse
+)
 def me(
     current_user: User = Depends(
         get_current_user
@@ -31,7 +42,10 @@ def me(
         "xp": current_user.xp,
         "level": current_user.level
     }
-@router.get("/profile")
+@router.get(
+    "/profile",
+    response_model=ProfileResponse
+)
 def get_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -86,4 +100,46 @@ def get_achievements(
     return [
         item.achievement
         for item in achievements
+    ]
+
+
+@router.get(
+    "/achievements/all",
+    response_model=list[
+        AchievementStatusResponse
+    ]
+)
+def get_all_achievements(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+
+    unlocked_ids = {
+        item.achievement_id
+        for item in (
+            db.query(UserAchievement)
+            .filter(
+                UserAchievement.user_id
+                == current_user.id
+            )
+            .all()
+        )
+    }
+
+    achievements = (
+        db.query(Achievement)
+        .order_by(Achievement.id)
+        .all()
+    )
+
+    return [
+        {
+            "id": achievement.id,
+            "name": achievement.name,
+            "description": achievement.description,
+            "unlocked": achievement.id in unlocked_ids
+        }
+        for achievement in achievements
     ]
