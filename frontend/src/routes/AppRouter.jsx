@@ -16,6 +16,7 @@ import SnakePage from "../games/snake/SnakePage";
 import MemoryMatchPage from "../games/memory-match/MemoryMatchPage";
 import TypingTestPage from "../games/typing-test/TypingTestPage";
 import TicTacToePage from "../games/tic-tac-toe/TicTacToePage";
+import WhackAMolePage from "../games/whack-a-mole/WhackAMolePage";
 import ProfilePage from "../pages/ProfilePage";
 export default function AppRouter() {
   return (
@@ -101,6 +102,15 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <TicTacToePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/games/whack-a-mole"
+          element={
+            <ProtectedRoute>
+              <WhackAMolePage />
             </ProtectedRoute>
           }
         />

@@ -9,6 +9,7 @@ const gameRoutes = {
   "Memory Match": "/games/memory-match",
   "Typing Test": "/games/typing-test",
   "Tic Tac Toe": "/games/tic-tac-toe",
+  "Whack A Mole": "/games/whack-a-mole",
 };
 
 export default function Dashboard() {

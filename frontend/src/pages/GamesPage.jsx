@@ -22,6 +22,11 @@ const games = [
     description: "Play X against the computer and submit winning scores.",
     path: "/games/tic-tac-toe",
   },
+  {
+    name: "Whack A Mole",
+    description: "Hit fast-moving targets before the timer runs out.",
+    path: "/games/whack-a-mole",
+  },
 ];
 
 export default function GamesPage() {
