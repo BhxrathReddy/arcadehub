@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import api from "../../api/api";
+import GameHeader from "../shared/GameHeader";
 const GRID_SIZE = 20;
-const CELL_SIZE = 24;
 const INITIAL_SNAKE = [{ x: 10, y: 10 }];
 const INITIAL_FOOD = { x: 5, y: 5 };
 const INITIAL_DIRECTION = "RIGHT";
@@ -405,7 +405,7 @@ export default function SnakePage() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4"
+      className="flex flex-col items-center min-h-screen bg-gray-900 text-white p-6"
       onTouchStart={
         handleTouchStart
       }
@@ -413,9 +413,10 @@ export default function SnakePage() {
         handleTouchEnd
       }
     >
-      <h1 className="text-5xl font-extrabold mb-2 tracking-widest text-green-400">
-        SNAKE
-      </h1>
+      <GameHeader
+        title="Snake"
+        subtitle="Eat food, grow longer, and avoid crashing into walls or yourself."
+      />
 
       <div className="text-lg mb-4">
         Score:
@@ -503,11 +504,13 @@ export default function SnakePage() {
       )}
 
       <div
-        className="border-2 border-gray-600 rounded"
+        className="border-2 border-gray-600 rounded overflow-hidden"
         style={{
           display: "grid",
           gridTemplateColumns:
-            `repeat(${GRID_SIZE}, ${CELL_SIZE}px)`,
+            `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
+          width: "min(92vw, 480px)",
+          aspectRatio: "1 / 1",
         }}
       >
         {Array.from({
@@ -548,10 +551,8 @@ export default function SnakePage() {
             <div
               key={index}
               style={{
-                width:
-                  CELL_SIZE,
-                height:
-                  CELL_SIZE,
+                aspectRatio:
+                  "1 / 1",
                 backgroundColor:
                   isFood
                     ? "#ef4444"

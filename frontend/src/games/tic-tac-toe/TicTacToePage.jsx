@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../../api/api";
+import GameHeader from "../shared/GameHeader";
 
 const GAME_ID = 4;
 const EMPTY_BOARD = Array(9).fill(null);
@@ -174,20 +175,17 @@ export default function TicTacToePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-6">
-      <h1 className="text-4xl font-bold mb-3">
-        Tic Tac Toe
-      </h1>
-
-      <p className="text-gray-300 mb-6">
-        You are X. Beat the computer to earn 100 points.
-      </p>
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-6">
+      <GameHeader
+        title="Tic Tac Toe"
+        subtitle="You are X. Beat the computer to earn 100 points."
+      />
 
       <div className="text-xl font-semibold mb-5">
         {submitting ? "Saving score..." : status}
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 w-full max-w-xs">
         {board.map((square, index) => (
           <button
             key={index}
@@ -195,13 +193,13 @@ export default function TicTacToePage() {
               handleMove(index)
             }
             className="
-              w-24
-              h-24
+              aspect-square
               rounded-lg
               bg-gray-800
               border
               border-gray-700
-              text-5xl
+              text-4xl
+              sm:text-5xl
               font-bold
               hover:bg-gray-700
               disabled:hover:bg-gray-800

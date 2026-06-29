@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../../api/api";
+import GameHeader from "../shared/GameHeader";
 
 const GAME_ID = 5;
 const ROUND_SECONDS = 30;
@@ -137,16 +138,13 @@ export default function WhackAMolePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-6">
-      <h1 className="text-4xl font-bold mb-3">
-        Whack A Mole
-      </h1>
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-6">
+      <GameHeader
+        title="Whack A Mole"
+        subtitle="Hit the active target before it moves. Each hit is worth 10 points."
+      />
 
-      <p className="text-gray-300 mb-6">
-        Hit the active target before it moves. Each hit is worth 10 points.
-      </p>
-
-      <div className="flex gap-8 text-xl font-semibold mb-6">
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-xl font-semibold mb-6">
         <div>
           Score: {score}
         </div>
@@ -181,7 +179,7 @@ export default function WhackAMolePage() {
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-xs">
         {Array.from({
           length: GRID_SIZE
         }).map((_, index) => (
@@ -194,8 +192,8 @@ export default function WhackAMolePage() {
               index === activeHole &&
               started &&
               !finished
-                ? "h-24 w-24 rounded-full bg-green-400 text-black text-3xl font-bold shadow-lg shadow-green-500/30"
-                : "h-24 w-24 rounded-full bg-gray-800 border border-gray-700 hover:bg-gray-700"
+                ? "aspect-square rounded-full bg-green-400 text-black text-3xl font-bold shadow-lg shadow-green-500/30"
+                : "aspect-square rounded-full bg-gray-800 border border-gray-700 hover:bg-gray-700"
             }
           >
             {index === activeHole &&

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../../api/api";
+import GameHeader from "../shared/GameHeader";
 
 const paragraphs = [
   "The quick brown fox jumps over the lazy dog.",
@@ -274,31 +275,28 @@ export default function TypingTestPage() {
       min-h-screen
       bg-gray-900
       text-white
-      p-8
+      p-6
       flex
       flex-col
       items-center
       "
     >
-
-      <h1
-        className="
-        text-4xl
-        font-bold
-        mb-6
-        "
-      >
-        Typing Speed Test
-      </h1>
+      <GameHeader
+        title="Typing Speed Test"
+        subtitle="Type the prompt accurately and race for the highest score."
+      />
 
       <div
         className="
+        w-full
         max-w-3xl
         bg-gray-800
-        p-6
+        p-4
+        sm:p-6
         rounded-lg
         mb-6
-        text-lg
+        text-base
+        sm:text-lg
         leading-relaxed
         "
       >

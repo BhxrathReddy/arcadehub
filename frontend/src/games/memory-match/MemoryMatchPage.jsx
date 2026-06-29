@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api/api";
+import GameHeader from "../shared/GameHeader";
 
 const symbols = [
   "A",
@@ -187,13 +188,14 @@ export default function MemoryMatchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-8">
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-6">
 
-      <h1 className="text-4xl font-bold mb-6">
-        Memory Match
-      </h1>
+      <GameHeader
+        title="Memory Match"
+        subtitle="Flip cards, find pairs, and finish with as few moves as possible."
+      />
 
-      <div className="flex gap-8 mb-6 text-lg">
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-6 text-lg">
 
         <div>
           Time:
@@ -216,11 +218,14 @@ export default function MemoryMatchPage() {
       </div>
 
       <div
-        className="
-          grid
-          grid-cols-4
-          gap-3
-        "
+          className="
+            grid
+            grid-cols-4
+            gap-2
+            sm:gap-3
+            w-full
+            max-w-md
+          "
       >
 
         {cards.map(
@@ -232,12 +237,12 @@ export default function MemoryMatchPage() {
               flipCard(index)
             }
             className="
-              w-24
-              h-24
+              aspect-square
               rounded-lg
               bg-gray-700
               hover:bg-gray-600
-              text-4xl
+              text-3xl
+              sm:text-4xl
               transition
             "
           >
