@@ -76,6 +76,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/arcadehub
 JWT_SECRET_KEY=change-me
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
+FRONTEND_ORIGINS=http://localhost:5173
 ```
 
 Install dependencies:
@@ -128,6 +129,12 @@ The frontend runs at:
 
 ```text
 http://localhost:5173
+```
+
+For deployed builds, set:
+
+```env
+VITE_API_URL=https://your-backend-url.com
 ```
 
 ## Useful Commands
@@ -189,6 +196,57 @@ docs/screenshots/games.png
 docs/screenshots/leaderboard.png
 docs/screenshots/profile.png
 ```
+
+## Deployment
+
+One simple deployment setup:
+
+- Deploy the backend API on Render, Railway, Fly.io, or another Python-friendly host.
+- Deploy PostgreSQL using the same platform or a managed database provider.
+- Deploy the frontend on Vercel or Netlify.
+
+### Backend Environment Variables
+
+Set these on your backend host:
+
+```env
+DATABASE_URL=postgresql://...
+JWT_SECRET_KEY=use-a-long-random-secret
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+FRONTEND_ORIGINS=https://your-frontend-url.com
+```
+
+Backend build/start commands:
+
+```bash
+pip install -r requirements.txt
+alembic upgrade head
+python -m app.database.seed
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+If the host separates build and start commands, run migrations and seeding during
+the build/release step, and use only the `uvicorn` command as the start command.
+
+### Frontend Environment Variables
+
+Set this on your frontend host:
+
+```env
+VITE_API_URL=https://your-backend-url.com
+```
+
+Frontend build settings:
+
+```text
+Root directory: frontend
+Build command: npm run build
+Output directory: dist
+```
+
+The included `frontend/vercel.json` keeps React Router routes working when a
+user refreshes a nested page.
 
 ## Future Improvements
 
