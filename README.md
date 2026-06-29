@@ -185,17 +185,6 @@ The seed command is safe to run more than once. It only adds missing records.
 5. Check the leaderboard.
 6. View XP, level, stats, and achievements on the profile page.
 
-## Screenshots
-
-Add screenshots here before sharing the project:
-
-```text
-docs/screenshots/login.png
-docs/screenshots/dashboard.png
-docs/screenshots/games.png
-docs/screenshots/leaderboard.png
-docs/screenshots/profile.png
-```
 
 ## Deployment
 
